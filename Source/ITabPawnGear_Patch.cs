@@ -9,6 +9,25 @@ namespace DropSome
     public static class ITabPawnGear_Patch
     {
         private static int initialValue = 1;
+        private static bool changeTip = false;
+
+        [HarmonyPatch("DrawThingRow")]
+        [HarmonyPrefix]
+        public static void DrawThingRow_Pre(Thing thing, ITab_Pawn_Gear __instance)
+        {
+            changeTip = !thing.def.destroyOnDrop && thing.stackCount > 1;
+        }
+
+        [HarmonyPatch(typeof(TooltipHandler), nameof(TooltipHandler.TipRegion), typeof(Rect), typeof(TipSignal))]
+        [HarmonyPrefix]
+        public static void TooltipHandler_TipRegion_Pre(ref TipSignal tip)
+        {
+            if (changeTip && tip.text == Strings.OriginalDropTooltip)
+            {
+                tip.text = Strings.StackDropTooltip;
+            }
+            changeTip = false;
+        }
 
         [HarmonyPatch("InterfaceDrop")]
         [HarmonyPrefix]
