@@ -13,7 +13,7 @@ namespace DropSome
 
         [HarmonyPatch("DrawThingRow")]
         [HarmonyPrefix]
-        public static void DrawThingRow_Pre(Thing thing, ITab_Pawn_Gear __instance)
+        public static void DrawThingRow_Pre(Thing thing)
         {
             changeTip = !thing.def.destroyOnDrop && thing.stackCount > 1;
         }
